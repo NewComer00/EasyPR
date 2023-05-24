@@ -120,7 +120,7 @@ int CPlateLocate::colorSearch(const Mat &src, const Color r, Mat &out,
 
   Mat src_threshold;
   threshold(match_grey, src_threshold, 0, 255,
-            CV_THRESH_OTSU + CV_THRESH_BINARY);
+            cv::THRESH_OTSU + cv::THRESH_BINARY);
 
   Mat element = getStructuringElement(
       MORPH_RECT, Size(color_morph_width, color_morph_height));
@@ -137,8 +137,8 @@ int CPlateLocate::colorSearch(const Mat &src, const Color r, Mat &out,
 
   findContours(src_threshold,
                contours,               // a vector of contours
-               CV_RETR_EXTERNAL,
-               CV_CHAIN_APPROX_NONE);  // all pixels of each contours
+               cv::RETR_EXTERNAL,
+               cv::CHAIN_APPROX_NONE);  // all pixels of each contours
 
   vector<vector<Point>>::iterator itc = contours.begin();
   while (itc != contours.end()) {
@@ -166,8 +166,8 @@ int CPlateLocate::sobelFrtSearch(const Mat &src,
   vector<vector<Point>> contours;
   findContours(src_threshold,
                contours,               // a vector of contours
-               CV_RETR_EXTERNAL,
-               CV_CHAIN_APPROX_NONE);  // all pixels of each contours
+               cv::RETR_EXTERNAL,
+               cv::CHAIN_APPROX_NONE);  // all pixels of each contours
 
   vector<vector<Point>>::iterator itc = contours.begin();
 
@@ -237,8 +237,8 @@ int CPlateLocate::sobelSecSearchPart(Mat &bound, Point2f refpoint,
   vector<vector<Point>> contours;
   findContours(bound_threshold,
                contours,               // a vector of contours
-               CV_RETR_EXTERNAL,
-               CV_CHAIN_APPROX_NONE);  // all pixels of each contours
+               cv::RETR_EXTERNAL,
+               cv::CHAIN_APPROX_NONE);  // all pixels of each contours
 
   vector<vector<Point>>::iterator itc = contours.begin();
 
@@ -277,8 +277,8 @@ int CPlateLocate::sobelSecSearch(Mat &bound, Point2f refpoint,
   vector<vector<Point>> contours;
   findContours(bound_threshold,
                contours,               // a vector of contours
-               CV_RETR_EXTERNAL,
-               CV_CHAIN_APPROX_NONE);  // all pixels of each contours
+               cv::RETR_EXTERNAL,
+               cv::CHAIN_APPROX_NONE);  // all pixels of each contours
 
   vector<vector<Point>>::iterator itc = contours.begin();
 
@@ -313,7 +313,7 @@ int CPlateLocate::sobelOper(const Mat &in, Mat &out, int blurSize, int morphW,
 
   Mat mat_gray;
   if (mat_blur.channels() == 3)
-    cvtColor(mat_blur, mat_gray, CV_RGB2GRAY);
+    cvtColor(mat_blur, mat_gray, cv::COLOR_RGB2GRAY);
   else
     mat_gray = mat_blur;
 
@@ -333,7 +333,7 @@ int CPlateLocate::sobelOper(const Mat &in, Mat &out, int blurSize, int morphW,
 
   Mat mat_threshold;
   double otsu_thresh_val =
-      threshold(grad, mat_threshold, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+      threshold(grad, mat_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
 
 
   Mat element = getStructuringElement(MORPH_RECT, Size(morphW, morphH));
@@ -346,7 +346,7 @@ int CPlateLocate::sobelOper(const Mat &in, Mat &out, int blurSize, int morphW,
 
 void deleteNotArea(Mat &inmat, Color color = UNKNOWN) {
   Mat input_grey;
-  cvtColor(inmat, input_grey, CV_BGR2GRAY);
+  cvtColor(inmat, input_grey, cv::COLOR_BGR2GRAY);
 
   int w = inmat.cols;
   int h = inmat.rows;
@@ -368,9 +368,9 @@ void deleteNotArea(Mat &inmat, Color color = UNKNOWN) {
     Mat tmp = input_grey(Rect_<double>(w * 0.15, h * 0.15, w * 0.7, h * 0.7));
     int threadHoldV = ThresholdOtsu(tmp);
 
-    threshold(input_grey, img_threshold, threadHoldV, 255, CV_THRESH_BINARY);
-    // threshold(input_grey, img_threshold, 5, 255, CV_THRESH_OTSU +
-    // CV_THRESH_BINARY);
+    threshold(input_grey, img_threshold, threadHoldV, 255, cv::THRESH_BINARY);
+    // threshold(input_grey, img_threshold, 5, 255, cv::THRESH_OTSU +
+    // cv::THRESH_BINARY);
 
     utils::imwrite("resources/image/tmp/inputgray2.jpg", img_threshold);
 
@@ -380,15 +380,15 @@ void deleteNotArea(Mat &inmat, Color color = UNKNOWN) {
     int threadHoldV = ThresholdOtsu(tmp);
 
     threshold(input_grey, img_threshold, threadHoldV, 255,
-              CV_THRESH_BINARY_INV);
+              cv::THRESH_BINARY_INV);
 
     utils::imwrite("resources/image/tmp/inputgray2.jpg", img_threshold);
 
-    // threshold(input_grey, img_threshold, 10, 255, CV_THRESH_OTSU +
-    // CV_THRESH_BINARY_INV);
+    // threshold(input_grey, img_threshold, 10, 255, cv::THRESH_OTSU +
+    // cv::THRESH_BINARY_INV);
   } else
     threshold(input_grey, img_threshold, 10, 255,
-              CV_THRESH_OTSU + CV_THRESH_BINARY);
+              cv::THRESH_OTSU + cv::THRESH_BINARY);
 
   //img_threshold = input_grey.clone();
   //spatial_ostu(img_threshold, 8, 2, plateType);
@@ -548,7 +548,7 @@ bool CPlateLocate::rotation(Mat &in, Mat &out, const Size rect_size,
 
   Mat mat_rotated;
   warpAffine(in_large, mat_rotated, rot_mat, Size(in_large.cols, in_large.rows),
-             CV_INTER_CUBIC);
+             INTER_CUBIC);
 
   /*imshow("mat_rotated", mat_rotated);
   waitKey(0);*/
@@ -686,9 +686,9 @@ void CPlateLocate::affine(const Mat &in, Mat &out, const double slope) {
   if (in.rows > HEIGHT || in.cols > WIDTH)
 
     warpAffine(in, affine_mat, warp_mat, affine_mat.size(),
-               CV_INTER_AREA);
+               INTER_AREA);
   else
-    warpAffine(in, affine_mat, warp_mat, affine_mat.size(), CV_INTER_CUBIC);
+    warpAffine(in, affine_mat, warp_mat, affine_mat.size(), INTER_CUBIC);
 
   out = affine_mat;
 }
@@ -823,7 +823,7 @@ int CPlateLocate::sobelOperT(const Mat &in, Mat &out, int blurSize, int morphW,
 
   Mat mat_gray;
   if (mat_blur.channels() == 3)
-    cvtColor(mat_blur, mat_gray, CV_BGR2GRAY);
+    cvtColor(mat_blur, mat_gray, cv::COLOR_BGR2GRAY);
   else
     mat_gray = mat_blur;
 
@@ -848,7 +848,7 @@ int CPlateLocate::sobelOperT(const Mat &in, Mat &out, int blurSize, int morphW,
 
   Mat mat_threshold;
   double otsu_thresh_val =
-      threshold(grad, mat_threshold, 0, 255, CV_THRESH_OTSU + CV_THRESH_BINARY);
+      threshold(grad, mat_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
 
   utils::imwrite("resources/image/tmp/grayBINARY.jpg", mat_threshold);
 

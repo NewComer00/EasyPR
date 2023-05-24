@@ -8,6 +8,7 @@
 #include "easypr/core/core_func.h"
 #include "easypr/util/util.h"
 #include "easypr/train/create_data.h"
+#include <opencv2/highgui/highgui_c.h>
 
 namespace easypr {
 

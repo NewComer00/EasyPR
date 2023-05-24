@@ -1,6 +1,7 @@
 #include "easypr/train/svm_train.h"
 #include "easypr/util/util.h"
 #include "easypr/config.h"
+#include <opencv2/highgui/highgui_c.h>
 
 #ifdef OS_WINDOWS
 #include <ctime>
